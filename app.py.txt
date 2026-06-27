@@ -4,7 +4,7 @@ import pandas as pd
 # 讀取檔案
 @st.cache_data # 這行可以讓網頁載入更快
 def load_data():
-    df = pd.read_excel('場地出借資訊115年_2.xlsx')
+    df = pd.read_excel('場地出借資訊115年.xlsx')
     # 自動填充地點欄位的空值
     df['地點'] = df['地點'].ffill()
     return df
