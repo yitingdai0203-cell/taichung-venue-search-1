@@ -1,0 +1,33 @@
+import streamlit as st
+import pandas as pd
+
+# 讀取檔案
+@st.cache_data # 這行可以讓網頁載入更快
+def load_data():
+    df = pd.read_excel('場地出借資訊115年_2.xlsx')
+    # 自動填充地點欄位的空值
+    df['地點'] = df['地點'].ffill()
+    return df
+
+df = load_data()
+
+st.title('台中市各區場地出借查詢系統')
+
+# 讓使用者選擇地區
+# 假設您想要根據「地點」來分區，或是您想建立一個「行政區」欄位
+# 如果還沒分類，我們可以直接用「地點」篩選
+location = st.selectbox('請選擇機構：', df['地點'].unique())
+
+# 篩選資料
+filtered_df = df[df['地點'] == location]
+
+# 顯示結果
+st.write(f'### {location} 的相關場地資訊')
+st.dataframe(filtered_df)
+
+# 提供聯絡資訊與連結
+st.write("---")
+st.write("詳細內容請參考連結：")
+for i, row in filtered_df.iterrows():
+    if pd.notna(row['表單連結']):
+        st.write(f"- [{row['名稱']}]({row['表單連結']})")
